@@ -1,4 +1,7 @@
 # Write your code below game_hash
+
+require 'pry'
+
 def game_hash
   {
     home: {
@@ -126,4 +129,94 @@ def game_hash
   }
 end
 
+def big_shoe_rebounds
+  biggest_home = home_team_players_and_stats.sort_by! { |k| k[:shoe] }.last 
+  biggest_away = away_team_players_and_stats.sort_by! { |k| k[:shoe] }.last
+
+  if biggest_home[:shoe] > biggest_away[:shoe]
+    biggest_home[:rebounds]
+  else
+    biggest_away[:rebounds]
+  end
+end
+
+def player_numbers(team_name)
+  jersey_numbers = []
+  team_stats = if team_name == "Brooklyn Nets"
+    home_team_players_and_stats
+  else
+    away_team_players_and_stats
+  end
+
+  team_stats.each do |player|
+    jersey_numbers << player[:number]
+  end
+
+  jersey_numbers
+
+end
+
+def team_names
+  team_names = []
+  team_names << game_hash[:home][:team_name]
+  team_names << game_hash[:away][:team_name]
+  team_names
+end
+
+def team_colors(team_name)
+  if team_name == "Brooklyn Nets"
+    game_hash[:home][:colors]
+  else
+    game_hash[:away][:colors]
+  end
+end
+
+def shoe_size(player_name)
+  player_stats(player_name)[:shoe]
+end
+
+def player_stats(player_name)
+  team = home_or_away(player_name)
+
+  stats = if team == 'home'
+            home_team_players_and_stats
+  else
+    away_team_players_and_stats
+  end
+
+  player_stats = stats.select do |player|
+    player[:player_name] == player_name
+  end
+
+  player_stats[0]
+
+end
+
+def num_points_scored(player_name)
+  player_stats(player_name)[:points]
+end
+
+def home_team_players_and_stats
+  game_hash[:home][:players]
+end
+
+def away_team_players_and_stats
+  game_hash[:away][:players]
+end
+
+def home_or_away(player)
+  home = home_team_players_and_stats
+  away = away_team_players_and_stats
+
+  home.each do |player_hash|
+    if player_hash[:player_name] == player
+      return 'home'
+    end
+  end
+  return 'away'
+end
+
 # Write code here
+
+binding.pry
+0
